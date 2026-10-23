@@ -1,41 +1,47 @@
-// backend mock data and utilities
+// Large dummy dataset for sales forecasting project
 import { Deal, Rep, Cluster } from './schema';
 
-export const deals: Deal[] = [
-  { id: 'd1', name: 'Deal One', amount: 100000, stage: 'prospect', winPropensity: 0.6 },
-  { id: 'd2', name: 'Deal Two', amount: 200000, stage: 'qualified', winPropensity: 0.4 },
-  { id: 'd3', name: 'Deal Three', amount: 150000, stage: 'proposal', winPropensity: 0.5 },
-];
+// Generate a range of ids
+const id = (prefix: string, i: number) => `${prefix}${i}`;
 
-export const reps: Rep[] = [
-  { id: 'r1', name: 'Rep One', capacity: 5, skillScore: 0.8 },
-  { id: 'r2', name: 'Rep Two', capacity: 5, skillScore: 0.6 },
-  { id: 'r3', name: 'Rep Three', capacity: 5, skillScore: 0.9 },
-];
+export const deals: Deal[] = Array.from({ length: 50 }, (_, i) => ({
+  id: id('d', i + 1),
+  name: `Deal ${i + 1}`,
+  amount: Math.floor(Math.random() * 500_000) + 50_000,
+  stage: ['prospect', 'qualified', 'proposal', 'negotiation', 'closed'][(i % 5)],
+  winPropensity: parseFloat((Math.random() * 0.9 + 0.1).toFixed(2)),
+}));
 
-export const clusters: Cluster[] = [
-  { id: 'c1', name: 'Cluster A', conversionProb: 0.7 },
-  { id: 'c2', name: 'Cluster B', conversionProb: 0.5 },
-];
+export const reps: Rep[] = Array.from({ length: 20 }, (_, i) => ({
+  id: id('r', i + 1),
+  name: `Rep ${i + 1}`,
+  capacity: Math.floor(Math.random() * 8) + 2,
+  skillScore: parseFloat((Math.random() * 0.5 + 0.5).toFixed(2)),
+}));
 
-export function getRepUtilization() {
-  // Return array of utilization objects for each rep
-  return reps.map((rep) => ({ rep, assigned: Math.floor(Math.random() * rep.capacity) }));
-}
+export const clusters: Cluster[] = Array.from({ length: 10 }, (_, i) => ({
+  id: id('c', i + 1),
+  name: `Cluster ${String.fromCharCode(65 + i)}`,
+  conversionProb: parseFloat((Math.random() * 0.5 + 0.5).toFixed(2)),
+}));
 
-export function simulateHawkesIntensity(dealId: string) {
+// Helper utilities (similar to existing mockData)
+export const getRepUtilization = () =>
+  reps.map(rep => ({
+    rep,
+    assigned: Math.floor(Math.random() * rep.capacity),
+  }));
+
+export const simulateHawkesIntensity = (dealId: string) => {
   const hash = dealId.split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
   return (hash % 100) / 100;
-}
+};
 
-export function getDealById(dealId: string): Deal | undefined {
-  return deals.find((d) => d.id === dealId);
-}
+export const getDealById = (dealId: string): Deal | undefined =>
+  deals.find(d => d.id === dealId);
 
-export function computeShap(dealId: string) {
-  return {
-    amount: Math.random() * 0.5,
-    winPropensity: Math.random() * 0.5,
-    clusterId: Math.random() * 0.5,
-  };
-}
+export const computeShap = (dealId: string) => ({
+  amount: Math.random() * 0.5,
+  winPropensity: Math.random() * 0.5,
+  clusterId: Math.random() * 0.5,
+});
