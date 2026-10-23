@@ -8,7 +8,7 @@ export const deals: Deal[] = Array.from({ length: 50 }, (_, i) => ({
   id: id('d', i + 1),
   name: `Deal ${i + 1}`,
   amount: Math.floor(Math.random() * 500_000) + 50_000,
-  stage: ['prospect', 'qualified', 'proposal', 'negotiation', 'closed'][(i % 5)],
+  stage: (['prospect', 'qualified', 'proposal', 'won', 'lost'] as const)[i % 5],
   winPropensity: parseFloat((Math.random() * 0.9 + 0.1).toFixed(2)),
 }));
 
